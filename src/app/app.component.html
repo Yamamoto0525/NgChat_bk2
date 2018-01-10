@@ -11,7 +11,8 @@
             <a href="#" class="icon-rounded">{{comment.initial}}</a>
           </div>
           <div class="media-body">
-            <h4 class="media-heading">{{comment.user.name}} Date:2016/09/01</h4>
+            <!--DatePipeを追加-->
+            <h4 class="media-heading">{{comment.user.name}}  Date: {{comment.date | chatDate}}</h4>
             <div>{{comment.content}}</div>
           </div>
           <!--current_user.uidとcomment.user.uidが等しい場合に表示-->
@@ -25,14 +26,14 @@
   </section>
 
   <section>
-    <form class="chart-form" (submit)="addComment(content)"><!--addComment()を追加-->
+    <form class="chart-form" (submit)="addComment(content)">
       <div class="input-group">
         <input type="text" class="form-control" 
         [(ngModel)]="content" 
         name="comment"
         placeholder="Comment" >
         <span class="input-group-btn">
-          <button class="btn btn-info" type="submit">SEND</button><!--submitに変更-->
+          <button class="btn btn-info" type="submit">SEND</button>
         </span>
       </div>
     </form>
