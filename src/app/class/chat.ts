@@ -1,4 +1,4 @@
-import * as moment from 'moment'; // 追加
+import * as moment from 'moment';
 
 export class User {
   uid: number;
@@ -14,12 +14,12 @@ export class Comment {
   user: User;
   initial: string;
   content: string;
-  date: number; // 追加
+  date: number;
 
   constructor(user: User, content: string) {
   	this.user = user;
   	this.initial = user.name.slice(0, 1);
   	this.content = content;
-    this.date = +moment(); // 追加
+    this.date = +moment();
   }
 }
