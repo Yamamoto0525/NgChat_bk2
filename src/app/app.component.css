@@ -42,6 +42,15 @@
   font-size: 13px;
 }
 
+.page .card .media-body div.edit-buttons { /*追加*/
+  margin-top: 10px;
+  text-align: center;
+}
+
+.page .card .media-body div.edit-buttons .btn { /*追加*/
+  width: 100px;
+}
+
 .page .card a.icon-rounded {
   display: block;
   font-size: 26px;
