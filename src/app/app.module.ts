@@ -1,23 +1,29 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { CoreModule } from './core/core.module'; // 追加
+// FormsModuleを削除
+import { SharedModule } from './shared/shared.module'; // 追加
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { environment } from '../environments/environment';
 
 import { AppComponent } from './app.component';
-import { ChatDatePipe } from './pipe/chat-date.pipe';
+import { ChatComponent } from './chat/chat.component'; // 追加
+// ChatDatePipeを削除
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    ChatDatePipe
+    // ChatDatePipeを削除
+    ChatComponent
   ],
   imports: [
     BrowserModule,
-    FormsModule,
+    // FormsModuleを削除
+    CoreModule, // 追加
+    SharedModule, // 追加
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireDatabaseModule,
     AngularFireAuthModule,
