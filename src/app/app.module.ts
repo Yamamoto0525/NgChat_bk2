@@ -1,29 +1,35 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { CoreModule } from './core/core.module'; // 追加
-// FormsModuleを削除
-import { SharedModule } from './shared/shared.module'; // 追加
+import { CoreModule } from './core/core.module';
+import { SharedModule } from './shared/shared.module';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { environment } from '../environments/environment';
+import { RouterModule, Routes } from '@angular/router';
 
+import { AccountModule } from './account/account.module'; // 追加
 import { AppComponent } from './app.component';
-import { ChatComponent } from './chat/chat.component'; // 追加
-// ChatDatePipeを削除
+import { ChatComponent } from './chat/chat.component';
+import { PageNotFoundComponent } from './error/page-not-found/page-not-found.component';
 
+const appRoutes: Routes = [ // 追加
+  { path: '', component: ChatComponent },
+  { path: 'account', loadChildren: 'app/account/account.module#AccountModule'}, // 追加
+  { path: '**', component: PageNotFoundComponent },
+];
 
 @NgModule({
   declarations: [
     AppComponent,
-    // ChatDatePipeを削除
-    ChatComponent
+    ChatComponent,
+    PageNotFoundComponent,
   ],
   imports: [
     BrowserModule,
-    // FormsModuleを削除
-    CoreModule, // 追加
-    SharedModule, // 追加
+    RouterModule.forRoot(appRoutes), // 追加
+    CoreModule,
+    SharedModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireDatabaseModule,
     AngularFireAuthModule,
