@@ -9,9 +9,8 @@ const ANOTHER_USER: User = new User(2, 'Suzuki Taro');
   selector: 'app-root',
   template: `
   	<app-header></app-header>
-  	<router-outlet></router-outlet> <!--変更-->
+  	<router-outlet></router-outlet>
   `,
-  // styleUrlsを削除
 })
 export class AppComponent {
 

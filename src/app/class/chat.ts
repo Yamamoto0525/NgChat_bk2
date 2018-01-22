@@ -33,3 +33,16 @@ export class Comment {
     return this;
   }
 }
+
+export class Session { // 追加
+  login: boolean;
+
+  constructor() {
+    this.login = false;
+  }
+
+  reset(): Session {
+    this.login = false;
+    return this;
+  }
+}
