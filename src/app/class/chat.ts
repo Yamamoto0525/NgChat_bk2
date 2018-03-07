@@ -1,5 +1,24 @@
 import * as moment from 'moment';
 
+export class Password { // 追加
+  email: string;
+  password: string;
+  password_confirmation: string;
+
+  constructor() {
+    this.email = '';
+    this.password = '';
+    this.password_confirmation = '';
+  }
+
+  reset(): void {
+    this.email = '';
+    this.password = '';
+    this.password_confirmation = '';    
+  }
+}
+
+
 export class User {
   uid: number;
   name: string;
@@ -34,7 +53,7 @@ export class Comment {
   }
 }
 
-export class Session { // 追加
+export class Session {
   login: boolean;
 
   constructor() {

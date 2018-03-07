@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+// CommonModuleを削除
+import { SharedModule } from '../shared/shared.module'; // 追加
 import { RouterModule, Routes } from '@angular/router';
 
 import { LoginComponent } from './login/login.component';
@@ -12,7 +13,8 @@ const appRoutes: Routes = [
 
 @NgModule({
   imports: [
-    CommonModule,
+    // CommonModuleを削除
+    SharedModule, // 追加
     RouterModule.forChild(appRoutes),
   ],
   declarations: [

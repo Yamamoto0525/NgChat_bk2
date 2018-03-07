@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 import { HeaderComponent } from './header/header.component';
-import { SessionService } from './service/session.service'; // 追加
+import { SessionService } from './service/session.service';
 
 @NgModule({
   imports: [
@@ -16,7 +16,7 @@ import { SessionService } from './service/session.service'; // 追加
   declarations: [
   	HeaderComponent 
   ],
-  providers: [ // 追加
+  providers: [
     SessionService
   ],
 })
