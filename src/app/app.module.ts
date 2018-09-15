@@ -5,10 +5,12 @@ import { FormsModule } from '@angular/forms';
 
 
 import { AppComponent } from './app.component';
+import { ChatDatePipe } from './pipe/chat-date.pipe';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ChatDatePipe
   ],
   imports: [
     BrowserModule,
