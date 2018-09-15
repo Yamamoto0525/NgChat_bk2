@@ -1,10 +1,11 @@
-<nav class="navbar fixed-top navbar-inverse bg-primary">
-  <div class="row justify-content-between">
-    <div class="col-4">
-      <a class="navbar-brand" href="#">NgChat</a>
-    </div>
-    <div class="col-4 text-right">
-      <a routerLink="/account/login" class="navbar-text">Login</a><!-- routerLinkに変更 -->
-    </div>
-  </div> 
+<nav class="navbar fixed-top navbar-dark bg-primary">
+	<a class="navbar-brand" href="#">NgChat</a>
+	<!-- ログイン状態で分岐 -->
+	<span class="navbar-text" *ngIf="!login">
+		<a routerLink="/account/login">Login</a>
+    </span>
+	<span class="navbar-text" *ngIf="login">
+		<a routerLink="/account/login" (click)="logout()">Logout</a>
+    </span>
+    <!-- 分岐ここまで -->
 </nav>

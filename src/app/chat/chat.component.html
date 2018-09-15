@@ -1,10 +1,10 @@
 <div class="page">
   <section class="card">
     <div class="card-header">
-      NgChat　
+      NgChat
     </div>
-    <div class="card-block">
-      <ng-container *ngFor="let comment of comments;let i=index"><!-- iを追加 -->
+    <div class="card-body">
+      <ng-container *ngFor="let comment of comments;let i=index">
         <div class="media">
           <div class="media-left" *ngIf="comment.user.uid !== current_user.uid">
             <a href="#" class="icon-rounded">{{comment.initial}}</a>
@@ -33,20 +33,20 @@
             <a href="#" class="icon-rounded">{{comment.initial}}</a>
           </div>
         </div>
-        <hr> 
+        <hr>
       </ng-container>
     </div>
   </section>
 
-  <section class="page-footer">
-    <form class="chart-form">
+  <section>
+    <form class="chart-form" (submit)="addComment(content)">
       <div class="input-group">
         <input type="text" class="form-control" 
-        [(ngModel)]="content"
-        name="comment" 
-        placeholder="Comment">
+        [(ngModel)]="content" 
+        name="comment"
+        placeholder="Comment" >
         <span class="input-group-btn">
-          <button class="btn btn-info" type="button" (click)="addComment(content)">SEND</button>
+          <button class="btn btn-info" type="submit">SEND</button>
         </span>
       </div>
     </form>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Comment, User } from '../class/chat';　// パスを調整
-import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
+import { Comment, User } from '../class/chat';
+import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
 
 const CURRENT_USER: User = new User(1, 'Tanaka Jiro');
 const ANOTHER_USER: User = new User(2, 'Suzuki Taro');
@@ -10,22 +10,24 @@ const ANOTHER_USER: User = new User(2, 'Suzuki Taro');
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
-
 export class ChatComponent implements OnInit {
 
-  public FB_comments: FirebaseListObservable<any[]>;
+  public FB_comments: AngularFireList<{}>;
   public content = '';
   public comments: Comment[] = [];
   public current_user = CURRENT_USER;
 
-  constructor(private db: AngularFireDatabase){ } // praivateを追加
+  constructor(private db: AngularFireDatabase) {
+  }
 
-  ngOnInit() { // コンストラクタの内容を移す
-    this.FB_comments = this.db.list('/comments'); // thisを追加
-    this.FB_comments.subscribe((snapshots: any[]) => {
-      this.comments = []; 
-      snapshots.forEach((snapshot: any) => {
-        this.comments.push(new Comment(snapshot.user, snapshot.content).setData(snapshot));
+  ngOnInit() { 
+    this.FB_comments = this.db.list('comments');
+    this.FB_comments.snapshotChanges().subscribe((actions: any[]) => {
+      this.comments = [];
+      actions.forEach((action: any) => {
+        const val = action.payload.val();
+        const key = action.payload.key;
+        this.comments.push(new Comment(val.user, val.content).setData(val.date, key));
       });
     });
   }
@@ -43,7 +45,7 @@ export class ChatComponent implements OnInit {
     this.comments[num].edit_flag = (this.comments[num].edit_flag) ? false : true;
   }
 
-  // コメントを更新する
+    // コメントを更新する
   saveEditComment(num: number, key: string) {
     this.FB_comments.update(key, {
       content: this.comments[num].content, 
@@ -59,7 +61,7 @@ export class ChatComponent implements OnInit {
     this.comments[num].content = '';
   }
 
-  // コメントを削除する
+    // コメントを削除する
   deleteComment(key: string) {
     this.FB_comments.remove(key).then(() => {
       alert('コメントを削除しました');

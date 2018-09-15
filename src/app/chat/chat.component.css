@@ -11,7 +11,7 @@
 }
 
 .page section{
-  margin: 50px 10px 30px; /*margine-topを50pxに*/
+  margin: 50px 10px 30px;
 }
 
 .page .page-footer{
@@ -69,4 +69,8 @@
 
 .page .card .media-right a.icon-rounded {
   background-color: #5cb85c;
+}
+
+.page .chart-form {
+  margin: 20px 0;
 }
