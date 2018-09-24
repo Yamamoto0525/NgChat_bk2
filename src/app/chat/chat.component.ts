@@ -22,8 +22,8 @@ export class ChatComponent implements OnInit {
   constructor(private db: AngularFirestore) {
   }
 
-  ngOnInit() { // コンストラクタの内容を移す
-    this.comments = this.db // thisを追加
+  ngOnInit() {
+    this.comments = this.db
       .collection<Comment>('comments', ref => {
         return ref.orderBy('date', 'asc')
       })
