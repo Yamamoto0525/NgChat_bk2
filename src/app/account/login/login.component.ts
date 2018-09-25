@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
+import { SessionService } from '../../core/service/session.service';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -7,9 +9,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoginComponent implements OnInit {
 
-  constructor() { }
+  constructor(private sessionService: SessionService) { } // 追加
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  submitLogin() { // 追加
+    this.sessionService.login();
   }
 
 }

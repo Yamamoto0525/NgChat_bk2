@@ -5,7 +5,7 @@ import { environment } from '../environments/environment';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
-import { RouterModule, Routes } from '@angular/router'; // 追加
+import { RouterModule, Routes } from '@angular/router';
 
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
@@ -14,8 +14,8 @@ import { ChatComponent } from './chat/chat.component';
 import { PageNotFoundComponent } from './error/page-not-found/page-not-found.component';
 
 
-const appRoutes: Routes = [ // 追加
-  { path: 'account', loadChildren: './account/account.module#AccountModule'}, // 追加
+const appRoutes: Routes = [
+  { path: 'account', loadChildren: './account/account.module#AccountModule'},
   { path: '', component: ChatComponent },
   { path: '**', component: PageNotFoundComponent },
 ];
@@ -29,7 +29,7 @@ const appRoutes: Routes = [ // 追加
   imports: [
     NgbModule.forRoot(),
     BrowserModule,
-    RouterModule.forRoot(appRoutes), // 追加
+    RouterModule.forRoot(appRoutes),
     CoreModule,
     SharedModule,
     AngularFireModule.initializeApp(environment.firebase),
