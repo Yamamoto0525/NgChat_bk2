@@ -1,15 +1,13 @@
 import { NgModule } from '@angular/core';
-// CommonModuleを削除
 
-import { SharedModule } from '../shared/shared.module'; // 追加
+import { SharedModule } from '../shared/shared.module';
 import { AccountRoutingModule } from './account-routing.module';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { LoginComponent } from './login/login.component';
 
 @NgModule({
   imports: [
-    // CommonModuleを削除
-    SharedModule, // 追加
+    SharedModule,
     AccountRoutingModule,
   ],
   declarations: [
@@ -17,4 +15,6 @@ import { LoginComponent } from './login/login.component';
     LoginComponent,
   ]
 })
-export class AccountModule { }
+
+export class AccountModule {
+}

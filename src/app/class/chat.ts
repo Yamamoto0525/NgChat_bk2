@@ -56,7 +56,7 @@ export class Session {
   }
 }
 
-export class Password { // 追加
+export class Password {
   email: string;
   password: string;
   password_confirmation: string;

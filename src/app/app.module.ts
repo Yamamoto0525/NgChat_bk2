@@ -12,12 +12,25 @@ import { SharedModule } from './shared/shared.module';
 import { AppComponent } from './app.component';
 import { ChatComponent } from './chat/chat.component';
 import { PageNotFoundComponent } from './error/page-not-found/page-not-found.component';
+import { AuthGuard } from './core/guard/auth.guard';
+import { LoginGuard } from './core/guard/login.guard';
 
 
 const appRoutes: Routes = [
-  { path: 'account', loadChildren: './account/account.module#AccountModule'},
-  { path: '', component: ChatComponent },
-  { path: '**', component: PageNotFoundComponent },
+  {
+    path: 'account',
+    loadChildren: './account/account.module#AccountModule',
+    canActivate: [LoginGuard],  // 追加
+  },
+  {
+    path: '',
+    component: ChatComponent,
+    canActivate: [AuthGuard],  // 追加
+  },
+  {
+    path: '**',
+    component: PageNotFoundComponent
+  },
 ];
 
 @NgModule({

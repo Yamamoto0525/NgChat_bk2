@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Router } from '@angular/router';
-import { AngularFireAuth } from '@angular/fire/auth'; // 追加
+import { AngularFireAuth } from '@angular/fire/auth';
 
 import { Password, Session } from '../../class/chat';
+import { map } from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,33 @@ export class SessionService {
   public sessionState = this.sessionSubject.asObservable();
 
   constructor(private router: Router,
-              private afAuth: AngularFireAuth) { } // 追加
+              private afAuth: AngularFireAuth) {
+  }
+
+  // ログイン状況確認
+  checkLogin(): void { // 追加
+    this.afAuth
+      .authState
+      .subscribe(auth => {
+        // ログイン状態を返り値の有無で判断
+        this.session.login = (!!auth);
+        this.sessionSubject.next(this.session);
+      });
+  }
+
+
+  // ログイン状況確認(State)
+  checkLoginState(): Observable<Session> { // 追加
+    return this.afAuth
+      .authState
+      .pipe(
+        map(auth => {
+          // ログイン状態を返り値の有無で判断
+          this.session.login = (!!auth);
+          return this.session;
+        })
+      )
+  }
 
   login(account: Password): void { // 変更
     this.afAuth
@@ -29,11 +56,11 @@ export class SessionService {
         } else {
           this.session.login = true;
           this.sessionSubject.next(this.session);
-          return this.router.navigate(['/']);
+          return this.router.navigate([ '/' ]);
         }
       })
       .then(() => alert('ログインしました。'))
-      .catch( err => {
+      .catch(err => {
         console.log(err);
         alert('ログインに失敗しました。\n' + err);
       })
@@ -45,23 +72,23 @@ export class SessionService {
       .signOut()
       .then(() => {
         this.sessionSubject.next(this.session.reset());
-        return this.router.navigate(['/account/login']);
+        return this.router.navigate([ '/account/login' ]);
       })
       .then(() => alert('ログアウトしました。'))
-      .catch( err => {
+      .catch(err => {
         console.log(err);
         alert('ログアウトに失敗しました。\n' + err);
       })
   }
 
   // アカウント作成
-  signup(account: Password): void { // 追加
+  signup(account: Password): void {
     this.afAuth
       .auth
       .createUserWithEmailAndPassword(account.email, account.password) // アカウント作成
-      .then( auth =>  auth.user.sendEmailVerification()) // メールアドレス確認
+      .then(auth => auth.user.sendEmailVerification()) // メールアドレス確認
       .then(() => alert('メールアドレス確認メールを送信しました。'))
-      .catch( err => {
+      .catch(err => {
         console.log(err);
         alert('アカウントの作成に失敗しました。\n' + err)
       })

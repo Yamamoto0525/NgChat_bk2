@@ -10,14 +10,15 @@ import { Password } from '../../class/chat';
 })
 export class LoginComponent implements OnInit {
 
-  public account = new Password(); // 追加
+  public account = new Password();
 
   constructor(private sessionService: SessionService) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
   submitLogin(e: Event) {
     e.preventDefault();
-    this.sessionService.login(this.account); // 変更
+    this.sessionService.login(this.account);
   }
 }
