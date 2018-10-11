@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from "rxjs";
-import { Comment, User } from "../class/chat";
-import { AngularFirestore } from "@angular/fire/firestore";
-import { map } from "rxjs/operators";
+import { Observable } from 'rxjs';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { map } from 'rxjs/operators';
 
-const CURRENT_USER: User = new User(1, 'Tanaka Jiro');
-const ANOTHER_USER: User = new User(2, 'Suzuki Taro');
+import { Comment, User } from '../class/chat';
+import { SessionService } from '../core/service/session.service'; // 追加
+
+// const CURRENT_USER: User = new User(1, 'Tanaka Jiro'); // 削除
+// const ANOTHER_USER: User = new User(2, 'Suzuki Taro'); // 削除
 
 @Component({
   selector: 'app-chat',
@@ -16,16 +18,22 @@ export class ChatComponent implements OnInit {
 
   public content = '';
   public comments: Observable<Comment[]>;
-  public current_user = CURRENT_USER;
+  public current_user: User; // 変更
 
   // DI（依存性注入する機能を指定）
-  constructor(private db: AngularFirestore) {
+  constructor(private db: AngularFirestore,
+              private session: SessionService) { // 追加
+    this.session // 追加
+      .sessionState
+      .subscribe(data => {
+        this.current_user = data.user;
+    });
   }
 
   ngOnInit() {
     this.comments = this.db
       .collection<Comment>('comments', ref => {
-        return ref.orderBy('date', 'asc')
+        return ref.orderBy('date', 'asc');
       })
       .snapshotChanges()
       .pipe(

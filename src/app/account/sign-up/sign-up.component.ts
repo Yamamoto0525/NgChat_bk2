@@ -21,12 +21,12 @@ export class SignUpComponent implements OnInit {
   submitSignUp(e: Event): void {
     e.preventDefault();
     // パスワード確認
-    if(this.account.password !== this.account.password_confirmation) {
+    if (this.account.password !== this.account.password_confirmation) {
       alert('パスワードが異なります。');
       return;
     }
     this.session.signup(this.account);
-    this.account.reset();
+    // this.account.reset(); 削除
   }
 
 }

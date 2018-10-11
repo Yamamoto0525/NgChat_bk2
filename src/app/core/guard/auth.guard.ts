@@ -10,13 +10,13 @@ import { map } from 'rxjs/operators';
 })
 export class AuthGuard implements CanActivate {
 
-  constructor(private session: SessionService,  // 追加
+  constructor(private session: SessionService,
               private router: Router) {
   }
 
   canActivate(next: ActivatedRouteSnapshot,
               state: RouterStateSnapshot): Observable<boolean> {
-    return this.session // 変更
+    return this.session
       .checkLoginState()
       .pipe(
         map(session => {
@@ -26,6 +26,6 @@ export class AuthGuard implements CanActivate {
           }
           return session.login;
         })
-      )
+      );
   }
 }

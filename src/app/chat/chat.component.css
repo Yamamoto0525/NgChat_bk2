@@ -7,7 +7,7 @@
   border-left: 1px solid #DDDDDD;
   border-right: 1px solid #DDDDDD;
   box-shadow: 0 0 15px #DDDDDD;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 
 .page section{
