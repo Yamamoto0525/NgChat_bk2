@@ -7,7 +7,7 @@
   border-left: 1px solid #DDDDDD;
   border-right: 1px solid #DDDDDD;
   box-shadow: 0 0 15px #DDDDDD;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 
 .page section{
@@ -37,12 +37,12 @@
 .form-signup .form-control:focus {
   z-index: 2;
 }
-.form-signup #inputName { /*追加*/
+.form-signup #inputName {
   margin-bottom: -1px;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
 }
-.form-signup #inputEmail {/*変更*/
+.form-signup #inputEmail {
   border-radius: 0;
   border-collapse: collapse;
   margin-bottom: -1px;

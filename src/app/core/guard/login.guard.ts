@@ -19,14 +19,14 @@ export class LoginGuard implements CanActivate {
     return this.session
       .checkLoginState()
       .pipe(
-        map( session => {
-          // ログインしていない場合はログイン画面に遷移
-          if (session.login) {
+        map((auth: boolean) => { // 変更
+          // ログインしている場合はチャット画面に遷移
+          if (auth) {
             this.router.navigate(['/']);
           }
-          return !session.login;
+          return !auth;
         })
-      )
+      );
   }
 
 }

@@ -1,61 +1,49 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, Subject } from 'rxjs';
+import { Observable } from 'rxjs'; // 変更
 import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { map, switchMap, take } from 'rxjs/operators'; // 追加
-import { AngularFirestore } from '@angular/fire/firestore'; // 追加
+import { map } from 'rxjs/operators'; // 変更
+import { AngularFirestore } from '@angular/fire/firestore';
+import { Store } from '@ngrx/store'; // 追加
 
-import { Password, Session, User } from '../../class/chat';
+import { Password, User } from '../../class/chat'; // 変更
+import * as fromCore from '../../core/store/reducers'; // 追加
+import { LoadSessions, LogoutSessions, UpdateSessions } from '../store/actions/session.actions'; // 追加
 
 @Injectable({
   providedIn: 'root'
 })
 export class SessionService {
 
-  public session = new Session();
-  public sessionSubject = new Subject<Session>();
-  public sessionState = this.sessionSubject.asObservable();
+  // public session = new Session(); // 削除
+  // public sessionSubject = new Subject<Session>(); // 削除
+  // public sessionState = this.sessionSubject.asObservable(); // 削除
 
   constructor(private router: Router,
               private afAuth: AngularFireAuth,
-              private afs: AngularFirestore) { // 追加
+              private afs: AngularFirestore,
+              private store: Store<fromCore.State>) { // 追加
   }
 
   // ログイン状況確認
   checkLogin(): void { // 変更
-    this.afAuth
-      .authState
-      .pipe(
-        switchMap(auth => {
-          // authの有無でObservbleを変更
-          if (!auth) {
-            return of(null);
-          } else {
-            return this.getUser(auth.uid);
-          }
-        })
-      )
-      .subscribe(auth => {
-        this.session.login = (!!auth);
-        this.session.user = (auth) ? auth : new User();
-        this.sessionSubject.next(this.session);
-      });
+    // ストアにセッションデータを反映
+    this.store.dispatch(new LoadSessions());
   }
 
   // ログイン状況確認(State)
-  checkLoginState(): Observable<Session> {
+  checkLoginState(): Observable<boolean> { // 変更
     return this.afAuth
       .authState
       .pipe(
-        map(auth => {
+        map((auth: any) => {
           // ログイン状態を返り値の有無で判断
-          this.session.login = (!!auth);
-          return this.session;
+          return (!!auth);
         })
       );
   }
 
-  login(account: Password): void {
+  login(account: Password): void { // 変更
     this.afAuth
       .auth
       .signInWithEmailAndPassword(account.email, account.password)
@@ -65,33 +53,19 @@ export class SessionService {
           this.afAuth.auth.signOut();
           return Promise.reject('メールアドレスが確認できていません。');
         } else {
-          this.session.login = true;
-          this.sessionSubject.next(this.session);
-          return this.router.navigate([ '/' ]);
+          // ストアにセッションデータを反映
+          this.store.dispatch(new UpdateSessions({auth: auth.user}));
         }
       })
-      .then(() => alert('ログインしました。'))
       .catch(err => {
         console.log(err);
         alert('ログインに失敗しました。\n' + err);
       });
   }
 
-  logout(): void {
-    this.afAuth
-      .auth
-      .signOut()
-      .then(() => {
-        return this.router.navigate([ '/account/login' ]);
-      })
-      .then(() => {
-        this.sessionSubject.next(this.session.reset()); // 変更
-        alert('ログアウトしました。');
-      })
-      .catch(err => {
-        console.log(err);
-        alert('ログアウトに失敗しました。\n' + err);
-      });
+  logout(): void { // 変更
+    // ストアにセッションデータを反映
+    this.store.dispatch(new LogoutSessions());
   }
 
   // アカウント作成
@@ -104,12 +78,12 @@ export class SessionService {
         auth = _auth;
         return auth.user.sendEmailVerification(); // メールアドレス確認
       })
-      .then(() => { // 追加
+      .then(() => {
         return this.createUser(new User(auth.user.uid, account.name));
       })
-      .then(() => this.afAuth.auth.signOut()) // 追加
+      .then(() => this.afAuth.auth.signOut())
       .then(() => {
-        account.reset(); // 追加
+        account.reset();
         alert('メールアドレス確認メールを送信しました。');
       })
       .catch(err => {
@@ -119,23 +93,13 @@ export class SessionService {
   }
 
   // ユーザーを作成
-  private createUser(user: User): Promise<void> { // 追加
+  private createUser(user: User): Promise<void> {
     return this.afs
       .collection('users')
       .doc(user.uid)
       .set(user.deserialize());
   }
 
-  // ユーザーを取得
-  private getUser(uid: string): Observable<any> { // 追加
-    return this.afs
-      .collection('users')
-      .doc(uid)
-      .valueChanges()
-      .pipe(
-        take(1),
-        switchMap((user: User) => of(new User(uid, user.name)))
-      );
-  }
+  // ユーザーを取得 // 削除
 
 }
