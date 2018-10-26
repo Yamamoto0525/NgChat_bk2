@@ -19,7 +19,7 @@ export class AuthGuard implements CanActivate {
     return this.session
       .checkLoginState()
       .pipe(
-        map((auth: boolean) => { // 変更
+        map((auth: boolean) => {
           // ログインしていない場合はログイン画面に遷移
           if (!auth) {
             this.router.navigate([ '/account/login' ]);

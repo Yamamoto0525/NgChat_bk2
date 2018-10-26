@@ -10,7 +10,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { AppComponent } from './app.component';
-import { ChatComponent } from './chat/chat.component';
+// import { ChatComponent } from './chat/chat.component'; // 削除
 import { PageNotFoundComponent } from './error/page-not-found/page-not-found.component';
 import { AuthGuard } from './core/guard/auth.guard';
 import { LoginGuard } from './core/guard/login.guard';
@@ -20,12 +20,12 @@ const appRoutes: Routes = [
   {
     path: 'account',
     loadChildren: './account/account.module#AccountModule',
-    canActivate: [LoginGuard],  // 追加
+    canActivate: [LoginGuard],
   },
   {
     path: '',
-    component: ChatComponent,
-    canActivate: [AuthGuard],  // 追加
+    loadChildren: './chat/chat.module#ChatModule', // 変更
+    canActivate: [AuthGuard],
   },
   {
     path: '**',
@@ -36,7 +36,7 @@ const appRoutes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    ChatComponent,
+    // ChatComponent, // 削除
     PageNotFoundComponent
   ],
   imports: [

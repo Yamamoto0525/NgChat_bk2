@@ -23,7 +23,7 @@ export const reducers: ActionReducerMap<State> = {
  * Logger
  */
 
-export function logger(reducer: ActionReducer<State>) { // 追加
+export function logger(reducer: ActionReducer<State>) {
   return (state, action) => {
     const newState = reducer(state, action);
     console.log('action', action);
@@ -36,7 +36,7 @@ export function logger(reducer: ActionReducer<State>) { // 追加
  * Meta Reducers
  */
 
-export const metaReducers: MetaReducer<State>[] = !environment.production ? [logger] : []; // 変更
+export const metaReducers: MetaReducer<State>[] = !environment.production ? [logger] : [];
 
 /**
  * Selector
@@ -45,3 +45,5 @@ export const metaReducers: MetaReducer<State>[] = !environment.production ? [log
 export const selectSession = (state: State) => state.session;
 export const getLoading = createSelector(selectSession, fromSession.getSessionLoading);
 export const getSession = createSelector(selectSession, fromSession.getSessionData);
+
+

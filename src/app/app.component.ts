@@ -11,7 +11,7 @@ import { SessionService } from './core/service/session.service';
 })
 export class AppComponent {
 
-  constructor(private session: SessionService) { // 追加
+  constructor(private session: SessionService) {
     this.session.checkLogin();
   }
 
