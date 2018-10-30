@@ -5,9 +5,9 @@ export enum SessionActionTypes {
   LoadSessions = '[Session] Load',
   LoadSessionsSuccess = '[Session] Load Success',
   LoadSessionsFail = '[Session] Load Fail',
-  UpdateSessions = '[Session] Update',
-  UpdateSessionsSuccess = '[Session] Update Success',
-  UpdateSessionsFail = '[Session] Update Fail',
+  LoginSessions = '[Session] Login',
+  LoginSessionsSuccess = '[Session] Login Success',
+  LoginSessionsFail = '[Session] Login Fail',
   LogoutSessions = '[Session] Logout',
   LogoutSessionsSuccess = '[Session] Logout Success',
   LogoutSessionsFail = '[Session] Logout Fail',
@@ -31,22 +31,22 @@ export class LoadSessionsFail implements Action {
   }
 }
 
-export class UpdateSessions implements Action {
-  readonly type = SessionActionTypes.UpdateSessions;
+export class LoginSessions implements Action {
+  readonly type = SessionActionTypes.LoginSessions;
 
-  constructor(public payload: { auth: any }) {
+  constructor(public payload: { email: string, password: string }) {
   }
 }
 
-export class UpdateSessionsSuccess implements Action {
-  readonly type = SessionActionTypes.UpdateSessionsSuccess;
+export class LoginSessionsSuccess implements Action {
+  readonly type = SessionActionTypes.LoginSessionsSuccess;
 
   constructor(public payload: { session: Session }) {
   }
 }
 
-export class UpdateSessionsFail implements Action {
-  readonly type = SessionActionTypes.UpdateSessionsFail;
+export class LoginSessionsFail implements Action {
+  readonly type = SessionActionTypes.LoginSessionsFail;
 
   constructor(public payload?: { error: any }) {
   }
@@ -74,9 +74,9 @@ export type SessionActions =
   | LoadSessions
   | LoadSessionsSuccess
   | LoadSessionsFail
-  | UpdateSessions
-  | UpdateSessionsSuccess
-  | UpdateSessionsFail
+  | LoginSessions
+  | LoginSessionsSuccess
+  | LoginSessionsFail
   | LogoutSessions
   | LogoutSessionsSuccess
   | LogoutSessionsFail;

@@ -1,9 +1,7 @@
+import { Action } from '@ngrx/store';
 import { Session } from '../../../class/chat';
 import { SessionActions, SessionActionTypes } from '../actions/session.actions';
 
-/**
- * State
- */
 
 export interface State {
   loading: boolean;
@@ -14,10 +12,6 @@ export const initialState: State = {
   loading: false,
   session: new Session()
 };
-
-/**
- * Reducer
- */
 
 export function reducer(
   state = initialState,
@@ -33,13 +27,13 @@ export function reducer(
     case SessionActionTypes.LoadSessionsFail: {
       return { ...state, loading: false };
     }
-    case SessionActionTypes.UpdateSessions: {
-      return { ...state, loading: true, session: action.payload.auth };
+    case SessionActionTypes.LoginSessions: {
+      return { ...state, loading: true };
     }
-    case SessionActionTypes.UpdateSessionsSuccess: {
+    case SessionActionTypes.LoginSessionsSuccess: {
       return { ...state, loading: false, session: action.payload.session };
     }
-    case SessionActionTypes.UpdateSessionsFail: {
+    case SessionActionTypes.LoginSessionsFail: {
       return { ...state, loading: false };
     }
     case SessionActionTypes.LogoutSessions: {
@@ -55,10 +49,6 @@ export function reducer(
       return state;
   }
 }
-
-/**
- * Selectors
- */
 
 export const getSessionLoading = (state: State) => state.loading;
 export const getSessionData = (state: State) => state.session;

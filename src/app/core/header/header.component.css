@@ -2,7 +2,7 @@
   margin: 65px 10px 30px;
 }
 
-.progress {
+.progress { /* 追加 */
   position: absolute;
   top: 0;
   width: 100%;

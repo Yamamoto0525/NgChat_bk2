@@ -1,13 +1,13 @@
 import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { StoreModule } from '@ngrx/store';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { EffectsModule } from '@ngrx/effects';
 
 import { HeaderComponent } from './header/header.component';
+import { StoreModule } from '@ngrx/store';
 import { reducers, metaReducers } from './store/reducers';
 import { environment } from '../../environments/environment';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { EffectsModule } from '@ngrx/effects';
 import { SessionEffects } from './store/effects/session.effects';
 
 @NgModule({
@@ -17,9 +17,9 @@ import { SessionEffects } from './store/effects/session.effects';
     StoreModule.forRoot(reducers, { metaReducers }),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     EffectsModule.forRoot([SessionEffects]),
-    StoreDevtoolsModule.instrument({
-      maxAge: 25, // Retains last 25 states
-      logOnly: environment.production, // Restrict extension to log-only mode
+    StoreDevtoolsModule.instrument({ // 追加
+      maxAge: 25, // stateの上限を設定
+      logOnly: environment.production, // 開発環境でのみ動作するよう制限
     }),
   ],
   exports: [

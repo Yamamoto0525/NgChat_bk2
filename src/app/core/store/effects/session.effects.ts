@@ -8,14 +8,19 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 
 import {
+  SessionActionTypes,
   LoadSessions,
-  LoadSessionsFail,
   LoadSessionsSuccess,
-  LogoutSessions, LogoutSessionsFail,
+  LoadSessionsFail,
+  LogoutSessions,
   LogoutSessionsSuccess,
-  SessionActionTypes, UpdateSessions, UpdateSessionsFail, UpdateSessionsSuccess
+  LogoutSessionsFail,
+  LoginSessions,
+  LoginSessionsSuccess,
+  LoginSessionsFail,
 } from '../actions/session.actions';
 import { Session, User } from '../../../class/chat';
+import { User as fbUser } from 'firebase';
 
 
 @Injectable()
@@ -24,7 +29,8 @@ export class SessionEffects {
   constructor(private actions$: Actions,
               private afAuth: AngularFireAuth,
               private afs: AngularFirestore,
-              private router: Router) {}
+              private router: Router) {
+  }
 
   /**
    * Load Sessions
@@ -34,20 +40,29 @@ export class SessionEffects {
   loadSession$: Observable<Action> =
     this.actions$.pipe(
       ofType<LoadSessions>(SessionActionTypes.LoadSessions),
-      map(action => action),
       // ユーザーの認証状況を取得
       switchMap(() => {
         return this.afAuth.authState
           .pipe(
             take(1),
-            map(result => result),
-            catchError(this.handleLoginError('fetchAuth', null))
+            map((result: fbUser | null) => {
+              if (!result) {
+                // ユーザーが存在しなかった場合は、空のセッションを返す
+                return new LoadSessionsSuccess({ session: new Session() });
+              } else {
+                return result;
+              }
+            }),
+            catchError(this.handleLoginError<LoadSessionsFail>(
+              'fetchAuth', new LoadSessionsFail())
+            )
           );
       }),
       // ユーザーの認証下情報を取得
-      switchMap((auth: any) => {
-        if (!auth) {
-          return of(new LoadSessionsFail({ error: 'not logged in' }));
+      switchMap((auth: fbUser | LoadSessionsSuccess | LoadSessionsFail) => {
+        // ユーザーが存在しなかった場合は、認証下情報を取得しない
+        if (auth instanceof LoadSessionsSuccess || auth instanceof LoadSessionsFail) {
+          return of(auth);
         }
         return this.afs
           .collection<User>('users')
@@ -60,26 +75,47 @@ export class SessionEffects {
                 session: new Session(result)
               });
             }),
-            catchError(this.handleLoginError(
-              'fetchUser',
-              new LoadSessionsFail({ error: 'not logged in' }))
+            catchError(this.handleLoginError<LoadSessionsFail>(
+              'fetchUser', new LoadSessionsFail())
             )
           );
       })
     );
 
   /**
-   * Update Session
+   * Login Session
    */
 
   @Effect()
-  updateSession$: Observable<Action> =
+  loginSession$: Observable<Action> =
     this.actions$.pipe(
-      ofType<UpdateSessions>(SessionActionTypes.UpdateSessions),
-      map(action => action.payload.auth),
-      switchMap((auth: any) => {
-        if (!auth || !auth.uid) {
-          return of(new UpdateSessionsFail({ error: 'not logged in' }));
+      ofType<LoginSessions>(SessionActionTypes.LoginSessions),
+      map(action => action.payload),
+      switchMap((payload: { email: string, password: string }) => {
+        return this.afAuth
+          .auth
+          .signInWithEmailAndPassword(payload.email, payload.password)
+          .then(auth => {
+            // ユーザーが存在しなかった場合は、空のセッションを返す
+            if (!auth.user.emailVerified) {
+              alert('メールアドレスが確認できていません。');
+              this.afAuth.auth.signOut()
+                .then(() => this.router.navigate([ '/account/login' ]));
+              return new LoginSessionsSuccess({ session: new Session() });
+            } else {
+              return auth.user;
+            }
+          })
+          .catch(err => {
+              alert('ログインに失敗しました。\n' + err);
+              return new LoginSessionsFail({ error: err });
+            }
+          );
+      }),
+      switchMap((auth: fbUser | LoginSessionsSuccess | LoginSessionsFail) => {
+        // ユーザーが存在しなかった場合は、空のセッションを返す
+        if (auth instanceof LoginSessionsSuccess || auth instanceof LoginSessionsFail) {
+          return of(auth);
         }
         return this.afs
           .collection<User>('users')
@@ -90,13 +126,13 @@ export class SessionEffects {
             map((result: User) => {
               alert('ログインしました。');
               this.router.navigate([ '/' ]);
-              return new UpdateSessionsSuccess({
+              return new LoginSessionsSuccess({
                 session: new Session(result)
               });
             }),
-            catchError(this.handleLoginError('updateUser',
-              new LoadSessionsFail({ error: 'not logged in' }), true)
-            )
+            catchError(this.handleLoginError<LoginSessionsFail>(
+              'loginUser', new LoginSessionsFail(), 'login'
+            ))
           );
       })
     );
@@ -109,31 +145,36 @@ export class SessionEffects {
   logoutSession$: Observable<Action> =
     this.actions$.pipe(
       ofType<LogoutSessions>(SessionActionTypes.LogoutSessions),
-      map(action => action),
       switchMap(() => this.afAuth.auth.signOut()),
-      map(() => {
-        alert('ログアウトしました。');
-        this.router.navigate([ '/account/login' ]);
-        return new LogoutSessionsSuccess({
-          session: new Session()
-        });
+      switchMap(() => {
+        return this.router.navigate([ '/account/login' ])
+          .then(() => {
+            alert('ログアウトしました。');
+            return new LogoutSessionsSuccess({
+              session: new Session()
+            });
+          });
       }),
-      catchError(error => {
-        alert('ログアウトに失敗しました。\n' + error);
-        return of(new LogoutSessionsFail({ error }));
-      })
+      catchError(this.handleLoginError<LogoutSessionsFail>(
+        'logoutUser', new LogoutSessionsFail(), 'logout'
+      ))
     );
 
+
   // エラー発生時の処理
-  private handleLoginError<T> (operation = 'operation', result: T, dialog?: boolean) {
+  private handleLoginError<T>(operation = 'operation', result: T, dialog?: 'login' | 'logout') {
     return (error: any): Observable<T> => {
 
       // 失敗した操作の名前、エラーログをconsoleに出力
       console.error(`${operation} failed: ${error.message}`);
 
       // アラートダイアログの表示
-      if (dialog) {
+      if (dialog === 'login') {
         alert('ログインに失敗しました。\n' + error);
+      }
+
+      if (dialog === 'logout') {
+        alert('ログアウトに失敗しました。\n' + error);
       }
 
       // ログアウト処理
@@ -145,4 +186,3 @@ export class SessionEffects {
     };
   }
 }
-

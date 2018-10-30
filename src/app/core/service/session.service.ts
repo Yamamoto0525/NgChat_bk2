@@ -1,66 +1,52 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs'; // 変更
 import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { map } from 'rxjs/operators';
+import { map } from 'rxjs/operators'; // 変更
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Store } from '@ngrx/store';
+import { Store } from '@ngrx/store'; // 追加
 
-import { Password, User } from '../../class/chat';
-import * as fromCore from '../../core/store/reducers';
-import { LoadSessions, LogoutSessions, UpdateSessions } from '../store/actions/session.actions';
+import { Password, User } from '../../class/chat'; // 変更
+import * as fromCore from '../../core/store/reducers'; // 追加
+import { LoadSessions, LogoutSessions, LoginSessions } from '../store/actions/session.actions'; // 追加
 
 @Injectable({
   providedIn: 'root'
 })
 export class SessionService {
 
+  // public session = new Session(); // 削除
+  // public sessionSubject = new Subject<Session>(); // 削除
+  // public sessionState = this.sessionSubject.asObservable(); // 削除
+
   constructor(private router: Router,
               private afAuth: AngularFireAuth,
               private afs: AngularFirestore,
-              private store: Store<fromCore.State>) {
+              private store: Store<fromCore.State>) { // 追加
   }
 
   // ログイン状況確認
-  checkLogin(): void {
-    // ストアにセッションデータを反映
+  checkLogin(): void { // 変更
     this.store.dispatch(new LoadSessions());
   }
 
   // ログイン状況確認(State)
-  checkLoginState(): Observable<boolean> {
+  checkLoginState(): Observable<{ login: boolean }> { // 変更
     return this.afAuth
       .authState
       .pipe(
         map((auth: any) => {
           // ログイン状態を返り値の有無で判断
-          return (!!auth);
+          return { login: !!auth };
         })
       );
   }
 
-  login(account: Password): void {
-    this.afAuth
-      .auth
-      .signInWithEmailAndPassword(account.email, account.password)
-      .then(auth => {
-        // メールアドレス確認が済んでいるかどうか
-        if (!auth.user.emailVerified) {
-          this.afAuth.auth.signOut();
-          return Promise.reject('メールアドレスが確認できていません。');
-        } else {
-          // ストアにセッションデータを反映
-          this.store.dispatch(new UpdateSessions({auth: auth.user}));
-        }
-      })
-      .catch(err => {
-        console.log(err);
-        alert('ログインに失敗しました。\n' + err);
-      });
+  login(account: Password): void { // 変更
+    this.store.dispatch(new LoginSessions({email: account.email, password: account.password}));
   }
 
-  logout(): void {
-    // ストアにセッションデータを反映
+  logout(): void { // 変更
     this.store.dispatch(new LogoutSessions());
   }
 
