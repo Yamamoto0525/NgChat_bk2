@@ -11,12 +11,12 @@ import {
   AddChat,
   ChatActionTypes,
   DeleteChat,
-  ErrorChat,
   LoadChats,
   LoadChatsFail,
   LoadChatsSuccess,
-  SuccessChat,
-  UpdateChat
+  UpdateChat,
+  WriteChatChatFail,
+  WriteChatSuccess,
 } from './chat.actions';
 
 @Injectable()
@@ -25,10 +25,6 @@ export class ChatEffects {
   constructor(private actions$: Actions,
               private db: AngularFirestore) {
   }
-
-  /**
-   * Add Chat
-   */
 
   @Effect()
   addChat$: Observable<Action> =
@@ -39,14 +35,10 @@ export class ChatEffects {
         return this.db
           .collection('comments')
           .add(comment.deserialize())
-          .then(() => new SuccessChat())
-          .catch(() => new ErrorChat({ error: 'failed to add' }));
+          .then(() => new WriteChatSuccess())
+          .catch(() => new WriteChatChatFail({ error: 'failed to add' }));
       })
     );
-
-  /**
-   * Update Chat
-   */
 
   @Effect()
   updateChat$: Observable<Action> =
@@ -60,15 +52,11 @@ export class ChatEffects {
           .update({ content: comment.changes.content, date: comment.changes.date })
           .then(() => {
             alert('コメントを更新しました');
-            return new SuccessChat();
+            return new WriteChatSuccess();
           })
-          .catch(() => new ErrorChat({ error: 'failed to update' }));
+          .catch(() => new WriteChatChatFail({ error: 'failed to update' }));
       })
     );
-
-  /**
-   * Delete Chat
-   */
 
   @Effect()
   deleteChat$: Observable<Action> =
@@ -82,15 +70,11 @@ export class ChatEffects {
           .delete()
           .then(() => {
             alert('コメントを削除しました');
-            return new SuccessChat();
+            return new WriteChatSuccess();
           })
-          .catch(() => new ErrorChat({ error: 'failed to delete' }));
+          .catch(() => new WriteChatChatFail({ error: 'failed to delete' }));
       })
     );
-
-  /**
-   * Load Chats
-   */
 
   @Effect()
   loadChats$: Observable<Action> =
@@ -116,7 +100,7 @@ export class ChatEffects {
               });
             }),
             catchError(this.handleChatsError(
-              'fetchChats', new LoadChatsFail({ error: 'failed to fetch' })
+              'fetchChats', new LoadChatsFail()
             ))
           );
       })

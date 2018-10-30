@@ -1,16 +1,16 @@
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
-
-import { Comment } from '../../class/chat';
-import { ChatActions, ChatActionTypes } from './chat.actions';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
+
+import { ChatActions, ChatActionTypes } from './chat.actions';
+import { Comment } from '../../class/chat';
 
 export interface State extends EntityState<Comment> {
   loading: boolean;
 }
 
-export const chatAdapter: EntityAdapter<Comment> = createEntityAdapter<Comment>();
+export const adapter: EntityAdapter<Comment> = createEntityAdapter<Comment>();
 
-export const initialState: State = chatAdapter.getInitialState({
+export const initialState: State = adapter.getInitialState({
   loading: false,
 });
 
@@ -24,11 +24,11 @@ export function reducer(
     }
 
     case ChatActionTypes.UpdateChat: {
-      return { ...chatAdapter.updateOne(action.payload.chat, state), loading: true };
+      return { ...adapter.updateOne(action.payload.chat, state), loading: true };
     }
 
     case ChatActionTypes.DeleteChat: {
-      return { ...chatAdapter.removeOne(action.payload.id, state), loading: true };
+      return { ...adapter.removeOne(action.payload.id, state), loading: true };
     }
 
     case ChatActionTypes.LoadChats: {
@@ -36,18 +36,18 @@ export function reducer(
     }
 
     case ChatActionTypes.LoadChatSuccess: {
-      return { ...chatAdapter.upsertMany(action.payload.chats, state), loading: false };
+      return { ...adapter.upsertMany(action.payload.chats, state), loading: false };
     }
 
     case ChatActionTypes.LoadChatsFail: {
       return { ...state, loading: false };
     }
 
-    case ChatActionTypes.SuccessChat: {
+    case ChatActionTypes.WriteChatSuccess: {
       return { ...state, loading: false };
     }
 
-    case ChatActionTypes.ErrorChat: {
+    case ChatActionTypes.WriteChatChatFail: {
       return { ...state, loading: false };
     }
 
@@ -57,11 +57,7 @@ export function reducer(
   }
 }
 
-/**
- * Selector
- */
-
-const { selectIds, selectEntities, selectAll, selectTotal } = chatAdapter.getSelectors();
+const { selectIds, selectEntities, selectAll, selectTotal } = adapter.getSelectors();
 export const selectChat = createFeatureSelector<State>('chat');
 export const getChatLoading = createSelector(selectChat, state => state.loading);
 export const selectAllChats = createSelector(selectChat, selectAll);

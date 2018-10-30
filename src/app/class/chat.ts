@@ -19,7 +19,7 @@ export class Comment {
   initial: string;
   content: string;
   date: number;
-  key?: string;
+  id?: string;
   edit_flag?: boolean;
 
   constructor(user: User, content: string) {
@@ -37,7 +37,7 @@ export class Comment {
   // 取得した日付を反映し、更新フラグをつける
   setData(date: number, key: string): Comment {
     this.date = date;
-    this.key = key;
+    this.id = key;
     this.edit_flag = false;
     return this;
   }
@@ -47,7 +47,7 @@ export class Session {
   login: boolean;
   user: User;
 
-  constructor(init?: User) { // 変更
+  constructor(init?: User) {
     this.login = (!!init);
     this.user = (init) ? new User(init.uid, init.name) : new User();
   }

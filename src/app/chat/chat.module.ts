@@ -4,18 +4,18 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 
 import { ChatRoutingModule } from './chat-routing.module';
-import { SharedModule } from '../shared/shared.module'; // 追加
-import { ChatComponent } from './chat.component'; // 追加
+import { SharedModule } from '../shared/shared.module';
+import { ChatComponent } from './chat.component';
 import { ChatEffects } from './store/chat.effects';
-import * as fromChat from './store/chat.reducer'; // 追加
+import * as fromChat from './store/chat.reducer';
 
 @NgModule({
   imports: [
     // CommonModule, // 削除
     SharedModule, // 追加
     ChatRoutingModule,
-    StoreModule.forFeature('chat', fromChat.reducer), // 追加
-    EffectsModule.forFeature([ChatEffects]), // 追加
+    StoreModule.forFeature('chat', fromChat.reducer),
+    EffectsModule.forFeature([ChatEffects]),
   ],
   declarations: [
     ChatComponent, // 追加

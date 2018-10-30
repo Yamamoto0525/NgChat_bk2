@@ -1,37 +1,33 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs'; // 変更
+import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { map } from 'rxjs/operators'; // 変更
+import { map } from 'rxjs/operators';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Store } from '@ngrx/store'; // 追加
+import { Store } from '@ngrx/store';
 
-import { Password, User } from '../../class/chat'; // 変更
-import * as fromCore from '../../core/store/reducers'; // 追加
-import { LoadSessions, LogoutSessions, LoginSessions } from '../store/actions/session.actions'; // 追加
+import { Password, User } from '../../class/chat';
+import * as fromCore from '../../core/store/reducers';
+import { LoadSessions, LogoutSessions, LoginSessions } from '../store/actions/session.actions';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SessionService {
 
-  // public session = new Session(); // 削除
-  // public sessionSubject = new Subject<Session>(); // 削除
-  // public sessionState = this.sessionSubject.asObservable(); // 削除
-
   constructor(private router: Router,
               private afAuth: AngularFireAuth,
               private afs: AngularFirestore,
-              private store: Store<fromCore.State>) { // 追加
+              private store: Store<fromCore.State>) {
   }
 
   // ログイン状況確認
-  checkLogin(): void { // 変更
+  checkLogin(): void {
     this.store.dispatch(new LoadSessions());
   }
 
   // ログイン状況確認(State)
-  checkLoginState(): Observable<{ login: boolean }> { // 変更
+  checkLoginState(): Observable<{ login: boolean }> {
     return this.afAuth
       .authState
       .pipe(
@@ -42,11 +38,11 @@ export class SessionService {
       );
   }
 
-  login(account: Password): void { // 変更
+  login(account: Password): void {
     this.store.dispatch(new LoginSessions({email: account.email, password: account.password}));
   }
 
-  logout(): void { // 変更
+  logout(): void {
     this.store.dispatch(new LogoutSessions());
   }
 

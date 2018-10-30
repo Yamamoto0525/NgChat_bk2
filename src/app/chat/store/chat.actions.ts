@@ -10,8 +10,8 @@ export enum ChatActionTypes {
   AddChat = '[Chat] Add Chat',
   UpdateChat = '[Chat] Update Chat',
   DeleteChat = '[Chat] Delete Chat',
-  SuccessChat = '[Chat] Success Chats',
-  ErrorChat = '[Chat] Error Chats'
+  WriteChatSuccess = '[Chat] Write Chat Success',
+  WriteChatChatFail = '[Chat] Write Chat Fail'
 }
 
 export class LoadChats implements Action {
@@ -50,24 +50,24 @@ export class DeleteChat implements Action {
   constructor(public payload: { id: string }) {}
 }
 
-export class SuccessChat implements Action {
-  readonly type = ChatActionTypes.SuccessChat;
+export class WriteChatSuccess implements Action {
+  readonly type = ChatActionTypes.WriteChatSuccess;
 
   constructor(public payload?: { chats: Comment[] }) {}
 }
 
-export class ErrorChat implements Action {
-  readonly type = ChatActionTypes.ErrorChat;
+export class WriteChatChatFail implements Action {
+  readonly type = ChatActionTypes.WriteChatChatFail;
 
   constructor(public payload?: { error: any }) {}
 }
 
 export type ChatActions =
- LoadChats
- | LoadChatsSuccess
- | LoadChatsFail
- | AddChat
- | UpdateChat
- | DeleteChat
- | SuccessChat
- | ErrorChat;
+  LoadChats
+  | LoadChatsSuccess
+  | LoadChatsFail
+  | AddChat
+  | UpdateChat
+  | DeleteChat
+  | WriteChatSuccess
+  | WriteChatChatFail;

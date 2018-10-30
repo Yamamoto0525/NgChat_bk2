@@ -17,7 +17,7 @@ import { SessionEffects } from './store/effects/session.effects';
     StoreModule.forRoot(reducers, { metaReducers }),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     EffectsModule.forRoot([SessionEffects]),
-    StoreDevtoolsModule.instrument({ // 追加
+    StoreDevtoolsModule.instrument({
       maxAge: 25, // stateの上限を設定
       logOnly: environment.production, // 開発環境でのみ動作するよう制限
     }),
