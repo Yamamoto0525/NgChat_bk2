@@ -1,0 +1,7 @@
+{
+  "projects": {
+    "dev": "開発用FirebaseプロジェクトID",
+    "staging": "ステージング用FirebaseプロジェクトID",
+    "prod": "本番用FirebaseプロジェクトID",
+  }
+}
